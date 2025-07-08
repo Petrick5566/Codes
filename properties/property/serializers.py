@@ -8,52 +8,54 @@ class PropertySerializer(serializers.ModelSerializer):
 
 class LocationSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Property
+        model = Location
         fields = '__all__'
+
+# from .models import Amenity
 
 class AmenitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Property
+        model = Amenity
         fields = '__all__'
 
 class PropertyAmenitySerializer(serializers.ModelSerializer):
     class Meta:
-        model = Property
+        model = PropertyAmenity
         fields = '__all__'
 
 
 class PropertyImageSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Property
+        model = PropertyImage
         fields = '__all__'
 
 class LandSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Property
+        model = Land
         fields = '__all__'
 
 class RentalSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Property
+        model =Rental
         fields = '__all__'
 
 class CampusHostelSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Property
+        model = CampusHostel
         fields = '__all__'
 
 class ApartmentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Property
+        model = Apartment
         fields = '__all__'
 
 class FavoriteSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Property
+        model = Favorite
         fields = '__all__'
 
 class Inquiryerializer(serializers.ModelSerializer):
     class Meta:
-        model = Property
+        model = Inquiry
         fields = '__all__'
 
