@@ -18,7 +18,7 @@ class Profile(models.Model):
         ('STUDENT', 'Student'),
     ]
     
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile', primary_key=True)
     user_type = models.CharField(max_length=20, choices=USER_TYPES, default='INDIVIDUAL')
     bio = models.TextField(blank=True, null=True)
     phone_number = PhoneNumberField(blank=True, null=True)
@@ -84,7 +84,7 @@ class Location(models.Model):
 
 class Amenity(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    # icon = models.CharField(max_length=50, blank=True, null=True)
+    icon = models.CharField(max_length=50, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     updated_at = models.DateTimeField(auto_now=True, null=True, blank=True)
     created_by = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, related_name='created_amenities')
