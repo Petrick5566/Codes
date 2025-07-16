@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from .models import Profile, Property, Location, Amenity, PropertyAmenity, PropertyImage, Land, Rental, Apartment, CampusHostel, Favorite, Inquiry
+from .models import Profile, Property, Location, Amenity, PropertyAmenity, PropertyImage, Land, Rental, Apartment, CampusHostel, Favorite, Inquiry, Review
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
@@ -107,3 +107,12 @@ class InquirySerializer(serializers.ModelSerializer):
         model = Inquiry
         fields = '__all__'
 
+
+class ReviewSerializer(serializers.ModelSerializer):
+    user = serializers.StringRelatedField()  # Shows username instead of ID
+    property = serializers.PrimaryKeyRelatedField(queryset=Property.objects.all())
+    
+    class Meta:
+        model = Review
+        fields = ['id', 'property', 'user', 'rating', 'comment', 'created_at']
+        read_only_fields = ['user', 'created_at'] 

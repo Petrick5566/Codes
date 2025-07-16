@@ -5,7 +5,10 @@ from django.core.validators import MinValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from phonenumber_field.modelfields import PhoneNumberField
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager
+from django.db import models
+from django.conf import settings
+
 
 # from property.models import Profile, property
 
@@ -14,6 +17,8 @@ class User(AbstractUser):
     
     class Meta:
         swappable = 'AUTH_USER_MODEL'
+        verbose_name = 'User'
+        verbose_name_plural = 'Users'
 class Profile(models.Model):
     USER_TYPES = [
         ('INDIVIDUAL', 'Individual'),
@@ -24,7 +29,7 @@ class Profile(models.Model):
         ('STUDENT', 'Student'),
     ]
     
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
     profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
     user_type = models.CharField(max_length=20, choices=USER_TYPES, default='INDIVIDUAL')
     bio = models.TextField(blank=True, null=True)
@@ -36,7 +41,8 @@ class Profile(models.Model):
     identity_verified = models.BooleanField(default=False)
     created_by = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='created_profiles')
     modified_by = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='modified_profiles')
-    
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     
     # Social media links
@@ -260,7 +266,7 @@ class CampusHostel(models.Model):
 
 
 class Favorite(models.Model):
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='favorites')
+    user = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, related_name='favorites')
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True,blank=True, null=True)
     updated_at = models.DateTimeField(auto_now=True,blank=True, null=True)
@@ -285,7 +291,7 @@ class Inquiry(models.Model):
     ]
     
     property = models.ForeignKey(Property, on_delete=models.CASCADE, related_name='inquiries')
-    user = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    user = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='inquiries' )
     message = models.TextField()
     contact_phone = PhoneNumberField(blank=True, null=True)
     contact_email = models.EmailField(blank=True, null=True)
@@ -293,8 +299,7 @@ class Inquiry(models.Model):
     updated_at = models.DateTimeField(auto_now=True,blank=True, null=True)
     status = models.CharField(max_length=20, choices=INQUIRY_STATUS, default='NEW')
     responded_at = models.DateTimeField(blank=True, null=True)
-    responded_by = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True, 
-                                   related_name='responded_inquiries')
+    responded_by = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True, related_name='responded_inquiries')
     response_notes = models.TextField(blank=True, null=True)
     created_by = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, related_name='created_inquiries')
     modified_by = models.ForeignKey(Profile, on_delete=models.SET_NULL, null=True, blank=True, related_name='modified_inquiries')

@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import PropertImage
-from .serializers import PropertyImageSerializer
+from property.models import PropertyImage
+from property.serializers import PropertyImageSerializer
 
 class PropertyImageView(APIView):
     def get(self, request, pk=None):

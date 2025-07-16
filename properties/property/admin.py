@@ -1,13 +1,9 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import User
-from .models import (
-    Profile, Location, Amenity, Property, PropertyAmenity, PropertyImage,
-    Land, Rental, Apartment, CampusHostel, Favorite, Inquiry, Review
-)
-
-# Unregister the default User admin
-admin.site.unregister(User)
+from .models import Profile, Location, Amenity,PropertyImage, PropertyAmenity, Property, Land, Rental, CampusHostel, Apartment, Favorite, Review, Inquiry
+# # Unregister the default User admin
+# # admin.site.unregister(User)
 
 class ProfileInline(admin.StackedInline):
     model = Profile
@@ -26,7 +22,7 @@ class ProfileInline(admin.StackedInline):
             'fields': ('email_verified', 'phone_verified', 'identity_verified')
         }),
     )
-
+@admin.register(User)
 class CustomUserAdmin(UserAdmin):
     inlines = (ProfileInline,)
     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_user_type')
@@ -189,7 +185,7 @@ class PropertyAmenityAdmin(admin.ModelAdmin):
     list_filter = ('amenity',)
     readonly_fields = ('added_at', 'updated_at')
 
-# Property Type Admins
+# # Property Type Admins
 @admin.register(Land)
 class LandAdmin(admin.ModelAdmin):
     list_display = ('property', 'land_type', 'area', 'has_utilities')
