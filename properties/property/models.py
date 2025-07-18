@@ -1,24 +1,24 @@
 from django.db import models
+# from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import User
-from django.utils import timezone
 from django.core.validators import MinValueValidator
+from django.utils import timezone
+from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from phonenumber_field.modelfields import PhoneNumberField
-from django.contrib.auth.models import AbstractUser, PermissionsMixin, BaseUserManager
-from django.db import models
-from django.conf import settings
+# from django.db import models
 
+# Remove the custom User model and use Django's built-in User
+# Keep only your Profile model:
 
-# from property.models import Profile, property
+# class User(AbstractUser):
+#     phone_number = models.CharField(max_length=20, blank=True, null=True)
 
-class User(AbstractUser):
-    phone_number = models.CharField(max_length=20, blank=True, null=True)
-    
-    class Meta:
-        swappable = 'AUTH_USER_MODEL'
-        verbose_name = 'User'
-        verbose_name_plural = 'Users'
+#     class Meta:
+#         swappable = 'AUTH_USER_MODEL'
+#         verbose_name = 'User'
+#         verbose_name_plural = 'Users'
+
 class Profile(models.Model):
     USER_TYPES = [
         ('INDIVIDUAL', 'Individual'),
@@ -29,8 +29,9 @@ class Profile(models.Model):
         ('STUDENT', 'Student'),
     ]
     
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
-    profile_picture = models.ImageField(upload_to='profile_pics/', blank=True, null=True)
+    
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     user_type = models.CharField(max_length=20, choices=USER_TYPES, default='INDIVIDUAL')
     bio = models.TextField(blank=True, null=True)
     phone_number = PhoneNumberField(blank=True, null=True)
@@ -39,11 +40,8 @@ class Profile(models.Model):
     email_verified = models.BooleanField(default=False)
     phone_verified = models.BooleanField(default=False)
     identity_verified = models.BooleanField(default=False)
-    created_by = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='created_profiles')
-    modified_by = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='modified_profiles')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
     
     # Social media links
     facebook = models.URLField(blank=True, null=True)
@@ -66,11 +64,9 @@ class Profile(models.Model):
     def full_name(self):
         return f"{self.user.first_name} {self.user.last_name}"
 
-
-@receiver(post_save, sender=User)
+@receiver(post_save, sender='auth.User')
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        # For the first user (superuser), created_by will be None
         Profile.objects.create(user=instance)
 
 

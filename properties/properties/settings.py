@@ -30,7 +30,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-AUTH_USER_MODEL = 'property.User'
+# AUTH_USER_MODEL = 'property.User'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -51,6 +51,9 @@ REST_FRAMEWORK = {
     )
 }
 
+# AUTHENTICATION_BACKENDS = [
+#     'django.contrib.auth.backends.ModelBackend',
+# ]
 from datetime import timedelta
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
