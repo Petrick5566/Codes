@@ -31,7 +31,7 @@ class Profile(models.Model):
     
     
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='profile')
     user_type = models.CharField(max_length=20, choices=USER_TYPES, default='INDIVIDUAL')
     bio = models.TextField(blank=True, null=True)
     phone_number = PhoneNumberField(blank=True, null=True)

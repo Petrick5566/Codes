@@ -5,7 +5,8 @@ from django.contrib import admin
 from .models import Profile, Location, Amenity, Property, PropertyAmenity, PropertyImage, Land, Rental, Apartment, CampusHostel, Favorite, Inquiry, Review
 
 
-# admin.site.register(User)
+# Unregister the default User admin
+# admin.site.unregister(User)
 
 # class ProfileInline(admin.StackedInline):
 #     model = Profile
@@ -14,41 +15,36 @@ from .models import Profile, Location, Amenity, Property, PropertyAmenity, Prope
 #     fk_name = 'user'
 #     readonly_fields = ('created_at', 'updated_at')
 #     fieldsets = (
-#         (None, {
-#             'fields': ('user_type', 'bio', 'profile_picture')
-#         }),
-#         ('Contact Info', {
-#             'fields': ('phone_number', 'date_of_birth')
-#         }),
-#         ('Verification', {
-#             'fields': ('email_verified', 'phone_verified', 'identity_verified')
-#         }),
+#         (None, {'fields': ('user_type', 'bio', 'profile_picture')}),
+#         ('Contact Info', {'fields': ('phone_number', 'date_of_birth')}),
+#         ('Verification', {'fields': ('email_verified', 'phone_verified', 'identity_verified')}),
 #     )
 
 # # 2. Register User with custom admin
+# @admin.register(User)
 # class CustomUserAdmin(UserAdmin):
 #     inlines = (ProfileInline,)
 #     list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'get_user_type')
 #     list_select_related = ('profile',)
 
-    # def get_user_type(self, instance):
-    #     if hasattr(instance, 'profile'):
-    #         return instance.profile.user_type
-    #     return None
-    # get_user_type.short_description = 'User Type'
+#     def get_user_type(self, instance):
+#         if hasattr(instance, 'profile'):
+#             return instance.profile.user_type
+#         return None
+#     get_user_type.short_description = 'User Type'
 
-    # def get_inline_instances(self, request, obj=None):
-    #     if not obj:  # Don't show inlines when adding a user
-    #         return []
-    #     return super().get_inline_instances(request, obj)
-
-# admin.site.register(User, CustomUserAdmin)
+#     def get_inline_instances(self, request, obj=None):
+#         if not obj:  # Don't show inlines when adding a user
+#             return []
+#         return super().get_inline_instances(request, obj)
 
 # 3. Profile Admin (optional - only if you need standalone profile admin)
 admin.site.register(Profile)
 # class ProfileAdmin(admin.ModelAdmin):
 #     list_display = ('user', 'user_type', 'phone_number', 'email_verified')
 #     readonly_fields = ('created_at', 'updated_at')
+#     list_filter = ('user_type', 'email_verified', 'phone_verified')
+#     search_fields = ('user__username', 'user__email', 'phone_number')
     
 #     def get_readonly_fields(self, request, obj=None):
 #         readonly_fields = ['created_at', 'updated_at']
@@ -56,6 +52,11 @@ admin.site.register(Profile)
 #             return readonly_fields + ['user']
 #         return readonly_fields
 
+#     def formfield_for_foreignkey(self, db_field, request, **kwargs):
+#         if db_field.name == "user":
+#             # Only show users that don't already have a profile
+#             kwargs["queryset"] = User.objects.filter(profile__isnull=True)
+#         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 admin.site.register(Location)
 # class LocationAdmin(admin.ModelAdmin):
